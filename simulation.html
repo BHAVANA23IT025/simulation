@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matter in Our Surroundings Simulation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="simulation.css">
+</head>
+<body>
+<div class="sim-root" id="sim-root">
+    <header class="sim-header">
+        <h1>Matter in Our Surroundings</h1>
+        <div class="hook-banner">
+            “Every object—from ice to air—is made of tiny particles whose spacing, motion, and attraction decide whether it behaves as a solid, liquid, or gas.”
+        </div>
+    </header>
+    <main class="sim-main">
+        <section class="left-pane">
+            <nav class="scene-selector" aria-label="Scene selection">
+                <button class="scene-btn active" data-scene="1"><span class="icon">💧</span> <span class="label">Dilution</span></button>
+                <button class="scene-btn" data-scene="2"><span class="icon">💨</span> <span class="label">Diffusion</span></button>
+                <button class="scene-btn" data-scene="3"><span class="icon">⚖️</span> <span class="label">States Comparison</span></button>
+                <button class="scene-btn" data-scene="4"><span class="icon">🔄</span> <span class="label">State Change</span></button>
+                <button class="scene-btn" data-scene="5"><span class="icon">☀️</span> <span class="label">Evaporation Factors</span></button>
+            </nav>
+            <div class="canvas-wrapper">
+                <div id="sim-canvas" class="canvas">
+                    <!-- Layer for visual effects (e.g., color haze for dilution) -->
+                    <div id="haze-layer"></div>
+                    <!-- Layer for visual particles (e.g., dye or escaping vapor) -->
+                    <div id="particle-layer"></div>
+                    <!-- Main stage for substance/apparatus SVG -->
+                    <div id="scene-stage"></div>
+
+                    <div class="gauge-widget">
+                        <div class="gauge-glass">
+                            <div class="gauge-marks"><span>-</span><span>-</span><span>-</span><span>-</span><span>-</span></div>
+                            <div class="gauge-liquid" id="gauge-liquid"></div>
+                        </div>
+                        <div class="gauge-readout">KE: <span id="gauge-val">0</span>/100</div>
+                    </div>
+
+                    <div class="molecule-scope">
+                        <div class="scope-label">Micro View</div>
+                        <div class="scope-lens" id="scope-lens"></div>
+                    </div>
+
+                    <div id="chill-badge" class="chill-badge" hidden>✅ State Change!</div>
+
+                    <div class="canvas-legend">
+                        <div class="legend-item"><span class="dot particle-hot"></span> High Kinetic Energy</div>
+                        <div class="legend-item"><span class="dot particle-cool"></span> Low Kinetic Energy</div>
+                        <div id="legend-state" class="legend-item"><span class="dot state-solid"></span> Current State: Solid</div>
+                    </div>
+                </div>
+            </div>
+            <section class="control-panel">
+                <div class="control-grid">
+                    <div class="control-group">
+                        <label class="lbl-temp">Temperature (<span id="val-temp">30</span>°C)</label>
+                        <input type="range" id="inp-temp" min="10" max="120" value="30" class="slider-temp">
+                    </div>
+                    <div class="control-group">
+                        <label class="lbl-pressure">Ambient Humidity (<span id="val-pressure">50</span>%)</label>
+                        <input type="range" id="inp-pressure" min="0" max="100" step="1" value="50" class="slider-pressure">
+                    </div>
+                    <div class="control-group">
+                        <label class="lbl-wind">Wind Speed (<span id="val-wind">2</span> m/s)</label>
+                        <input type="range" id="inp-wind" min="0" max="5" value="2" class="slider-wind">
+                    </div>
+                    <div class="control-group">
+                        <label class="lbl-area">Surface Area (<span id="val-area">5</span>x)</label>
+                        <input type="range" id="inp-area" min="1" max="10" step="1" value="5" class="slider-area">
+                    </div>
+                    <div class="control-group full-width">
+                        <label class="lbl-substance">Phenomenon</label>
+                        <select id="inp-substance">
+                            <option value="dilution" selected>Dilution</option>
+                            <option value="diffusion">Diffusion</option>
+                            <option value="states-comparison">States Comparison</option>
+                            <option value="state-change">State Change</option>
+                            <option value="evaporation-factors">Evaporation Factors</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="action-bar">
+                    <div class="btn-group">
+                        <button id="btn-run" class="primary-btn">Start Simulation</button>
+                        <button id="btn-pause" disabled>Pause</button>
+                        <button id="btn-reset">Reset</button>
+                    </div>
+                    <div class="readouts">
+                        <div class="readout-box">
+                            <span class="label" id="out-rate-label">Diffusion Time</span>
+                            <span id="out-rate" class="value pulse-target">--</span>
+                        </div>
+                        <div class="readout-box">
+                            <span class="label" id="out-metric-label">Volume (mL)</span>
+                            <span id="out-metric" class="value pulse-target">--</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+        <aside class="right-pane">
+            <div class="tabs-section">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="visual">Visual</button>
+                    <button class="tab-btn" data-tab="analogy">Analogy</button>
+                    <button class="tab-btn" data-tab="cause">Cause</button>
+                    <button class="tab-btn" data-tab="model">Model</button>
+                    <button class="tab-btn" data-tab="fix">Fix</button>
+                </div>
+                <div id="tab-content" class="tab-content"></div>
+            </div>
+            <div class="lab-guide">
+                <div class="guide-header">
+                    <span class="guide-icon">🧪</span>
+                    <h4>Lab Challenges (Bloom's Taxonomy)</h4>
+                </div>
+                <div id="guide-content" class="guide-content">
+                    <!-- Challenges loaded by JS -->
+                </div>
+            </div>
+        </aside>
+    </main>
+</div>
+<script src="simulation.js"></script>
+</body>
+</html>
