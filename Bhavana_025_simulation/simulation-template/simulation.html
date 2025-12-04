@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biology Sim: The Fundamental Unit of Life</title>
+    <link rel="stylesheet" href="simulation.css">
+    <style>
+        :root {
+            --color-primary: #4CAF50; /* Green for Biology */
+            --color-secondary: #FFC107; /* Yellow for highlights */
+            --color-text: #2c3e50;
+            --color-background: #f4f6f9;
+            --color-card: #ffffff;
+            --color-border: #e0e6ed;
+            --color-nucleus: #e53935;
+            --color-cytoplasm: #fafafa;
+            --color-membrane: #00bcd4;
+            --color-organelle: #9c27b0;
+        }
+        [data-theme="dark"] {
+            --color-primary: #81C784;
+            --color-secondary: #FFEB3B;
+            --color-text: #ecf0f1;
+            --color-background: #1e272e;
+            --color-card: #2f3640;
+            --color-border: #4a5568;
+            --color-cytoplasm: #2d3436;
+        }
+    </style>
+</head>
+<body>
+    <div class="sim-root" id="sim-root">
+        <header class="sim-header">
+            <h1>Cells: Structure, Membrane Transport, Organelles and Cell Division</h1>
+            <div class="hook-banner">
+                “All living organisms are built from cells — discrete, membrane-bounded units whose internal organisation defines identity and enables life processes.”
+            </div>
+        </header>
+        <main class="sim-main">
+            <section class="left-pane">
+                <nav class="scene-selector" aria-label="Scene selection">
+                    <button class="scene-btn active" data-scene="1"><span class="icon">🔬</span> <span class="label">Microscopy</span></button>
+                    <button class="scene-btn" data-scene="2"><span class="icon">💧</span> <span class="label">Membrane</span></button>
+                    <button class="scene-btn" data-scene="3"><span class="icon">🧬</span> <span class="label">Organelles</span></button>
+                    <button class="scene-btn" data-scene="4"><span class="icon">🦠</span> <span class="label">Pro/Euk</span></button>
+                    <button class="scene-btn" data-scene="5"><span class="icon">➗</span> <span class="label">Division</span></button>
+                </nav>
+                <div class="canvas-wrapper">
+                    <div id="sim-canvas" class="canvas">
+                        <div id="stain-layer"></div>
+                        <div id="transport-layer"></div>
+                        <div id="scene-stage"></div>
+                        <div id="particle-layer"></div>
+                        <div class="reading-widget">
+                            <div class="therm-glass">
+                                <div class="readout-scale" id="readout-scale"></div>
+                                <div class="readout-liquid" id="readout-liquid"></div>
+                            </div>
+                            <div class="readout-label"><span id="readout-val">100</span>%</div>
+                        </div>
+                        <div class="molecule-scope">
+                            <div class="scope-label">Micro View</div>
+                            <div class="scope-lens" id="scope-lens"></div>
+                        </div>
+                        <div id="focus-badge" class="chill-badge" hidden>🎯 Key Process Highlighted!</div>
+                        <div class="canvas-legend">
+                            <div class="legend-item"><span class="dot particle-water"></span> Water Molecule</div>
+                            <div class="legend-item"><span class="dot particle-solute"></span> Solute/Stain Particle</div>
+                        </div>
+                    </div>
+                </div>
+                <section class="control-panel">
+                    <div class="control-grid">
+                        <div class="control-group">
+                            <label class="lbl-mag">Magnification (<span id="val-mag">100</span>x)</label>
+                            <input type="range" id="inp-mag" min="10" max="400" value="100" class="slider-mag">
+                        </div>
+                        <div class="control-group">
+                            <label class="lbl-conc">Concentration (<span id="val-conc">10</span> mM)</label>
+                            <input type="range" id="inp-conc" min="0" max="100" value="10" class="slider-conc">
+                        </div>
+                        <div class="control-group">
+                            <label class="lbl-speed">Animation Speed (<span id="val-speed">1.0</span>x)</label>
+                            <input type="range" id="inp-speed" min="0.1" max="2.0" step="0.1" value="1.0" class="slider-speed">
+                        </div>
+                        <div class="control-group full-width">
+                            <label class="lbl-stain">Visual Selector</label>
+                            <select id="inp-selector">
+                                <option value="onion">Onion Peel</option>
+                                <option value="cheek">Cheek Cell</option>
+                                <option value="iodine">Iodine Stain</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="action-bar">
+                        <div class="btn-group">
+                            <button id="btn-run" class="primary-btn">Start</button>
+                            <button id="btn-pause" disabled>Pause</button>
+                            <button id="btn-reset">Reset</button>
+                        </div>
+                        <div class="readouts">
+                            <div class="readout-box">
+                                <span class="label">Transport Rate</span>
+                                <span id="out-rate" class="value pulse-target">0.00</span>
+                            </div>
+                            <div class="readout-box">
+                                <span class="label">Cell Volume</span>
+                                <span id="out-volume" class="value pulse-target">1.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+            <aside class="right-pane">
+                <div class="tabs-section">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="visual">Visual</button>
+                        <button class="tab-btn" data-tab="analogy">Analogy</button>
+                        <button class="tab-btn" data-tab="cause">Cause</button>
+                        <button class="tab-btn" data-tab="model">Model</button>
+                        <button class="tab-btn" data-tab="fix">Fix</button>
+                    </div>
+                    <div id="tab-content" class="tab-content"></div>
+                </div>
+                <div class="lab-guide">
+                    <div class="guide-header">
+                        <span class="guide-icon">🧪</span>
+                        <h4>Lab Challenges</h4>
+                    </div>
+                    <div id="guide-content" class="guide-content">
+                        </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+    <script src="simulation.js"></script>
+</body>
+</html>
