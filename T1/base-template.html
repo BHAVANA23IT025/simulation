@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarcin Simulation Base Template</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Simulation styles -->
+  <link rel="stylesheet" href="simulation.css">
+
+  <style>
+    :root {
+      --color-primary: #0078ff;
+      --color-secondary: #00d4ff;
+      --color-background: #f8fbff;
+      --color-text: #0b2545;
+      --color-card: #ffffff;
+      --color-border: #e3f2fd;
+      --shadow: 0 4px 16px rgba(0, 120, 255, 0.1);
+    }
+
+    [data-theme="dark"] {
+      --color-background: #1a202c;
+      --color-text: #e2e8f0;
+      --color-card: #2d3748;
+      --color-border: #4a5568;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--color-background);
+      color: var(--color-text);
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card {
+      background: var(--color-card);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--color-border);
+      max-width: 960px;
+      width: 100%;
+      position: relative;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0, 120, 255, 0.15);
+    }
+
+    .card-title {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+    .card-subtitle {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    .theme-toggle-card {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--color-border);
+      border-radius: 12px;
+      background: var(--color-background);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+      z-index: 10;
+      font-size: 1.1rem;
+    }
+
+    .theme-toggle-card:hover {
+      transform: translateY(-1px) scale(1.02);
+    }
+
+    .simulation-panel {
+      background: linear-gradient(
+        135deg,
+        rgba(0, 120, 255, 0.05),
+        rgba(0, 212, 255, 0.05)
+      );
+      border: 2px dashed var(--color-border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 16px;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .simulation-loading {
+      text-align: center;
+      font-style: italic;
+      opacity: 0.7;
+    }
+
+    .simulation-error {
+      color: #ff5252;
+      font-weight: 500;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 class="card-title">Tarcin Simulation Portal</h2>
+    <p class="card-subtitle">
+      Your simulation will load below automatically. If it doesn’t, please check the console for errors.
+    </p>
+
+    <button class="theme-toggle-card" id="theme-toggle-card">
+      <span id="theme-icon">🌙</span>
+    </button>
+
+    <div class="simulation-panel" id="simulation-panel">
+      <p class="simulation-loading">Loading simulation…</p>
+    </div>
+  </div>
+
+  <script>
+    // ---------- THEME TOGGLER ----------
+    (function () {
+      const themeToggleCard = document.getElementById('theme-toggle-card');
+      const themeIcon = document.getElementById('theme-icon');
+      const root = document.documentElement;
+
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      root.setAttribute('data-theme', savedTheme);
+      themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+      themeToggleCard.addEventListener('click', () => {
+        const currentTheme = root.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', newTheme);
+        themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        localStorage.setItem('theme', newTheme);
+      });
+    })();
+
+    // ---------- SIMULATION LOADER ----------
+    (function () {
+      const panel = document.getElementById('simulation-panel');
+      if (!panel) {
+        console.error('❌ simulation-panel container not found in DOM.');
+        return;
+      }
+
+      // Load simulation.html into the panel
+      fetch('./simulation.html')
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('HTTP status ' + response.status);
+          }
+          return response.text();
+        })
+        .then((html) => {
+          panel.innerHTML = html;
+
+          // After HTML is injected, load simulation.js once
+          const script = document.createElement('script');
+          script.src = 'simulation.js';
+
+          script.onload = () => {
+            console.log('✅ simulation.js loaded successfully');
+          };
+
+          script.onerror = () => {
+            console.error('❌ Failed to load simulation.js');
+          };
+
+          document.body.appendChild(script);
+        })
+        .catch((err) => {
+          console.error('Simulation load error:', err);
+          panel.innerHTML =
+            '<p class="simulation-error">Failed to load simulation. Please try again.</p>';
+        });
+    })();
+  </script>
+</body>
+</html>

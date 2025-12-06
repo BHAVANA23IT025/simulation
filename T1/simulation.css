@@ -1,0 +1,112 @@
+/* simulation.css
+   Base styling for simulations.
+   This file assumes color variables are defined in base-template.html.
+*/
+
+.sim-root {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+/* Layout */
+.sim-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  gap: 16px;
+}
+
+.sim-header {
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sim-header-title {
+  margin: 0 0 4px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.sim-header-subtitle {
+  margin: 0;
+  opacity: 0.7;
+}
+
+/* Controls / Sidebar */
+.sim-controls {
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Main content area */
+.sim-content {
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.9);
+  min-height: 160px;
+}
+
+/* Notes area */
+.sim-notes {
+  grid-column: 1 / -1;
+  border-radius: 10px;
+  border: 1px dashed var(--color-border);
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+/* Simple button styling for demo controls */
+.sim-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-primary);
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.sim-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 120, 255, 0.25);
+}
+
+.sim-button:active {
+  transform: translateY(0);
+  box-shadow: none;
+  opacity: 0.9;
+}
+
+/* Small text helpers */
+.sim-label {
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.sim-value {
+  font-weight: 600;
+}
+
+/* Responsive tweaks */
+@media (max-width: 700px) {
+  .sim-layout {
+    grid-template-columns: 1fr;
+  }
+}
